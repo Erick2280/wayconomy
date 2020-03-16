@@ -49,7 +49,7 @@ class Calculator {
     }
     
     func getFormattedEfficiency() -> String? {
-        if (distanceTraveled != 0 && spentFuel != 0) {
+        if (distanceTraveled > 0 && spentFuel > 0) {
             performEfficiencyCalculation()
             return formatNumber(number: efficiency, isKmPerLiter: true)
         }

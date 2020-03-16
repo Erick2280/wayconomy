@@ -22,6 +22,7 @@ class ViewController: UIViewController {
     @IBOutlet var changeCalcTypeButton: UIButton!
     @IBOutlet var efficiencyTextField: UITextField!
     @IBOutlet var fuelPriceTextField: UITextField!
+    @IBOutlet var backgroundImage: UIImageView!
     
     let calculator: Calculator = Calculator()
     
@@ -37,6 +38,18 @@ class ViewController: UIViewController {
 
         view.addGestureRecognizer(tap)
         
+         if #available(iOS 13.0, *) {
+              calcTypeSegmentedControl.layer.borderColor = UIColor.white.cgColor
+              calcTypeSegmentedControl.selectedSegmentTintColor = UIColor.white
+
+              let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+              calcTypeSegmentedControl.setTitleTextAttributes(titleTextAttributes, for:.normal)
+
+              let titleTextAttributes1 = [NSAttributedString.Key.foregroundColor: UIColor.black]
+              calcTypeSegmentedControl.setTitleTextAttributes(titleTextAttributes1, for:.selected)
+          }
+        
+        UIApplication.shared.statusBarStyle = .lightContent
         // Do any additional setup after loading the view.
     }
     
@@ -73,6 +86,7 @@ class ViewController: UIViewController {
             pricePerKmView.isHidden = true;
             calcTitleLabel.text = "Rendimento"
             changeCalcTypeButton.isHidden = false;
+            backgroundImage.image = UIImage(named: "Background")
             onUpdateEfficiencyTextFields()
         } else if (type == 1) {
             // Preço por km
@@ -83,12 +97,13 @@ class ViewController: UIViewController {
             pricePerKmView.isHidden = false;
             calcTitleLabel.text = "Preço por km"
             changeCalcTypeButton.isHidden = true;
+            backgroundImage.image = UIImage(named: "Background Alternative")
             onUpdatePricePerKmTextFields()
         }
         
     }
     
-    func setCalcHelpText(calcTypeIndex: Int, isTextFieldEmpty: Bool = false, isTextFieldWithZero: Bool = false) {
+    func setCalcHelpText(calcTypeIndex: Int, isTextFieldEmpty: Bool = false, isTextFieldEqualOrSmallerThanZero: Bool = false) {
         let calcTypeName: String
         
         if (calcTypeIndex == 0) {
@@ -99,8 +114,8 @@ class ViewController: UIViewController {
         
         if (isTextFieldEmpty) {
             calcHelpLabel.text = "Quando você inserir os dados, o \(calcTypeName) calculado aparecerá aqui."
-        } else if (isTextFieldWithZero) {
-            calcHelpLabel.text = "Por favor, insira um valor diferente de zero nos campos para calcular o \(calcTypeName)."
+        } else if (isTextFieldEqualOrSmallerThanZero) {
+            calcHelpLabel.text = "Por favor, insira um valor maior que zero nos campos para calcular o \(calcTypeName)."
         }
         
     }
@@ -123,7 +138,7 @@ class ViewController: UIViewController {
         
         guard let result = calculator.getFormattedEfficiency() else {
             toggleResultStatus(viewable: false)
-            setCalcHelpText(calcTypeIndex: 0, isTextFieldWithZero: true)
+            setCalcHelpText(calcTypeIndex: 0, isTextFieldEqualOrSmallerThanZero: true)
             return
         }
         
@@ -151,7 +166,7 @@ class ViewController: UIViewController {
         
         guard let result = calculator.getFormattedPricePerKm() else {
             toggleResultStatus(viewable: false)
-            setCalcHelpText(calcTypeIndex: 1, isTextFieldWithZero: true)
+            setCalcHelpText(calcTypeIndex: 1, isTextFieldEqualOrSmallerThanZero: true)
             return
         }
         
